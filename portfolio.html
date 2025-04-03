@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Portfolio</title>
+    <style>
+        /* General Styles */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+            overflow-y: auto; /* Ensure vertical scroll */
+            transition: background 1s ease-in-out, color 1s ease-in-out;
+        }
+
+        /* Header Styles */
+        header {
+            padding: 10px 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.1);
+            -webkit-backdrop-filter: blur(0px); /* Add blur effect for Safari */
+            backdrop-filter: blur(0px);
+        }
+
+        header nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        nav ul li {
+            position: relative;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            padding: 10px 15px;
+            transition: color 0.3s, background-color 0.3s;
+            border-radius: 5px;
+        }
+
+        nav ul li a:hover {
+            color: #333;
+            background-color: #fff;
+        }
+
+        /* Responsive Design */
+        @media only screen and (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+
+            nav ul li a {
+                padding: 10px;
+                display: block;
+                width: 100%;
+                text-align: center;
+            }
+
+            .menu-icon {
+                display: flex;
+                flex-direction: column;
+                cursor: pointer;
+            }
+
+            .menu-icon .bar {
+                width: 25px;
+                height: 3px;
+                background-color: white;
+                margin: 4px 0;
+                transition: 0.4s;
+            }
+
+            .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background: rgba(255, 255, 255, 0.1);
+                -webkit-backdrop-filter: blur(10px); /* Add blur effect for Safari */
+                backdrop-filter: blur(10px); /* Add blur effect */
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+        }
+
+        /* DAY MODE */
+        body.day {
+            background: linear-gradient(to bottom, #ff9a9e, #fad0c4, #fbc2eb, #a6c1ee, #fbc2eb);
+        }
+
+        body.day section {
+            background: rgba(255, 255, 255, 0.8);
+            color: #333;
+        }
+
+        /* NIGHT MODE */
+        body.night {
+            background: linear-gradient(to bottom, #0f2027, #203a43, #2c5364, #4e4376, #2c3e50);
+        }
+
+        body.night section {
+            background: rgba(0, 0, 0, 0.8);
+            color: #fff;
+        }
+
+        .sky {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        /* ☀️ SUN - Visible in Day Mode */
+        .sun {
+            position: absolute;
+            top: 10%;
+            left: 75%;
+            width: 80px;
+            height: 80px;
+            background: #ffdd57;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(255, 221, 87, 0.5);
+            animation: sun-move 10s linear infinite;
+        }
+
+        @keyframes sun-move {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(-20px); }
+            100% { transform: translateX(0); }
+        }
+
+        body.night .sun {
+            display: none;
+        }
+
+        /* 🌙 MOON - Visible in Night Mode */
+        .moon {
+            position: absolute;
+            top: 10%;
+            left: 80%;
+            width: 80px;
+            height: 80px;
+            background: #f0f0f0;
+            border-radius: 50%;
+            box-shadow: 0 0 20px rgba(240, 240, 240, 0.5);
+            animation: moon-move 10s linear infinite;
+        }
+
+        @keyframes moon-move {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(20px); }
+            100% { transform: translateX(0); }
+        }
+
+        body.day .moon {
+            display: none;
+        }
+
+        /* ⭐ STARS - Only in Night Mode */
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            display: none;
+        }
+
+        .star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            animation: twinkling 1.5s infinite ease-in-out;
+        }
+
+        body.night .stars {
+            display: block;
+        }
+
+        /* Shooting Star */
+        .shooting-star {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px white, 0 0 20px rgba(255, 255, 255, 0.5), 0 0 30px rgba(255, 255, 255, 0.3);
+            animation: shooting 5s linear infinite;
+        }
+
+        @keyframes shooting {
+            0% {
+                top: -10%;
+                left: 100%;
+                opacity: 1;
+            }
+            100% {
+                top: 100%;
+                left: -10%;
+                opacity: 0;
+            }
+        }
+
+        /* ☁️ CLOUDS - Always Visible */
+        .cloud {
+            position: absolute;
+            font-size: 80px;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);
+            animation: cloud-move 20s linear infinite;
+        }
+
+        @keyframes cloud-move {
+            0% { transform: translateX(0); }
+            50% { transform: translateX(50px); }
+            100% { transform: translateX(0); }
+        }
+
+        .cloud:nth-child(1) { top: 20%; left: 10%; }
+        .cloud:nth-child(2) { top: 30%; left: 50%; }
+        .cloud:nth-child(3) { top: 40%; left: 80%; }
+        .cloud:nth-child(4) { top: 50%; left: 30%; }
+        .cloud:nth-child(5) { top: 60%; left: 20%; }
+        .cloud:nth-child(6) { top: 70%; left: 70%; }
+        .cloud:nth-child(7) { top: 80%; left: 40%; }
+        .cloud:nth-child(8) { top: 90%; left: 60%; }
+
+        /* Toggle Button */
+        #toggle-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.8);
+            color: #333;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        #toggle-button:hover {
+            background: #333;
+            color: white;
+        }
+
+        /* Content Container */
+        .content {
+            position: relative;
+            z-index: 0;
+            text-align: center;
+            color: inherit;
+            max-width: 400px; /* Reduced width */
+            padding: 20px;
+            margin: 20px auto; /* Added margin for spacing */
+            -webkit-backdrop-filter: blur(5px); /* Add blur effect for Safari */
+            backdrop-filter: blur(5px); /* Add blur effect */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            opacity: 0; /* Initially invisible */
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .content:hover {
+            opacity: 1; /* Become visible on hover */
+            transform: scale(1.05);
+        }
+
+        .content h1 {
+            font-size: 2rem;
+            margin-bottom: 15px;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        .content p {
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        /* Sections */
+        section {
+            padding: 20px 5px;
+            text-align: center;
+            color: inherit;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 1s ease, transform 1s ease, background 1s ease-in-out, color 1s ease-in-out;
+        }
+
+        section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Hover Effects for Sections */
+        section:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Twinkling Effect */
+        @keyframes twinkling {
+            0% { opacity: 0.8; }
+            50% { opacity: 1; }
+            100% { opacity: 0.8; }
+        }
+
+        /* Fade-In Animation */
+        @keyframes fadeIn {
+            0% { opacity: 0; transform: translateY(-20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Welcome Section */
+        #welcome {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            color: white;
+            background: rgba(0, 0, 0, 0.5);
+            -webkit-backdrop-filter: blur(10px); /* Add blur effect for Safari */
+            backdrop-filter: blur(10px);
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        #welcome h1 {
+            font-size: 3rem;
+            margin: 0;
+        }
+
+        #welcome p {
+            font-size: 1.5rem;
+            margin: 10px 0 0;
+        }
+
+        /* Picture Container */
+        .picture-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .picture-container img {
+            width: 200px; /* Adjusted width */
+            height: 200px; /* Adjusted height */
+            object-fit: cover; /* Ensure the image covers the container */
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Projects Section */
+        .projects-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .project {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .project:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .project img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .project-content {
+            padding: 15px;
+        }
+
+        .project-content h3 {
+            margin: 0 0 10px;
+            font-size: 1.5rem;
+        }
+
+        .project-content p {
+            margin: 0 0 10px;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Contact Form */
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .contact-form input,
+        .contact-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+
+        .contact-form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1rem;
+            resize: vertical; /* Allow vertical resizing */
+            min-height: 100px; /* Set a minimum height */
+        }
+
+        .contact-form button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            color: white;
+            background-color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .contact-form button:hover {
+            background-color: #555;
+        }
+
+        .skills-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .skills-icons img {
+            width: 50px;
+            height: 50px;
+            transition: transform 0.3s ease;
+        }
+
+        .skills-icons img:hover {
+            transform: scale(1.2);
+        }
+        .email-link {
+            color: inherit;
+            text-decoration: underline;
+        }
+    </style>
+    <!-- Include EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("YOUR_USER_ID"); // Replace 'YOUR_USER_ID' with your actual EmailJS user ID
+        })();
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("contact-form").addEventListener("submit", function(event) {
+                event.preventDefault(); // Prevent default form submission
+
+                // Collect form data
+                const name = document.getElementById("name").value;
+                const email = document.getElementById("email").value;
+                const message = document.getElementById("message").value;
+
+                // Validate form data
+                if (!name || !email || !message) {
+                    document.getElementById("response-message").innerText = "Please fill out all fields.";
+                    document.getElementById("response-message").style.color = "red";
+                    return;
+                }
+
+                // Send email using EmailJS
+                emailjs.send("service_n0pvwkb", "template_w4186cp", {
+                    name: name,
+                    email: email,
+                    message: message
+                }).then(
+                    function(response) {
+                        console.log("SUCCESS!", response.status, response.text);
+                        document.getElementById("response-message").innerText = "Message sent successfully!";
+                        document.getElementById("response-message").style.color = "green";
+                        document.getElementById("contact-form").reset(); // Clear the form
+                    },
+                    function(error) {
+                        console.log("FAILED...", error);
+                        document.getElementById("response-message").innerText = "Failed to send message. Please try again.";
+                        document.getElementById("response-message").style.color = "red";
+                    }
+                );
+            });
+        });
+    </script>
+</head>
+<body class="day">
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="menu-icon" id="menu-icon">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#about">About Me</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#languages">Languages</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <!-- Toggle Button -->
+            <button id="toggle-button">🌙 Switch to Night</button>
+        </nav>
+    </header>
+
+    <!-- Sky Elements -->
+    <div class="sky">
+        <!-- Sun (for Day) -->
+        <div class="sun"></div>
+
+        <!-- Moon (for Night) -->
+        <div class="moon"></div>
+
+        <!-- Stars (for Night) -->
+        <div class="stars"></div>
+
+        <!-- Shooting Star -->
+        <div class="shooting-star"></div>
+
+        <!-- Clouds -->
+        <div class="clouds">
+            <div class="cloud">☁️</div>
+            <div class="cloud">☁️</div>
+            <div class="cloud">☁️</div>
+            <div class="cloud">☁️</div>
+            <div class="cloud">☁️</div>
+            <div class="cloud">☁️</div>
+            <div class="cloud">☁️</div>
+            <div class="cloud">☁️</div>
+        </div>
+    </div>
+
+    <!-- Welcome Section -->
+    <section id="welcome">
+        <div>
+            <h1>Welcome to My Portfolio</h1>
+            <p>Explore my work and skills</p>
+        </div>
+    </section>
+
+    <!-- About Me Section -->
+    <section id="about" class="content">
+        <div class="picture-container">
+            <img src="image_box/WhatsApp Image 2025-02-18 at 09.45.28.jpeg" alt="Your Photo">
+        </div>
+        <h2>About Me</h2>
+        <p>Hi, I'm Daniel Mensah Williams, a 22-year-old student and a junior software engineer with a passion for web development and creating innovative digital solutions. I specialize in building user-friendly, responsive, and dynamic websites, ensuring seamless user experiences. As a continuous learner, I am always eager to explore new technologies and improve my coding skills..</p>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="content">
+        <h2>Skills</h2>
+        <div class="skills-icons">
+            <img src="image_box/html5-brands.svg" alt="HTML5" title="HTML5">
+            <img src="image_box/css3-brands.svg" alt="CSS3" title="CSS3">
+            <img src="image_box/js-brands.svg" alt="JavaScript" title="JavaScript">
+            <img src="image_box/react-brands.svg" alt="React" title="React">
+            <img src="image_box/node-js-brands.svg" alt="Node.js" title="Node.js">
+            <img src="image_box/git-brands.svg" alt="Git" title="Git">
+        </div>
+        <p>Proficient in HTML, CSS, JavaScript, and currently learning React and Node.js. I also have experience with version control systems like Git.</p>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="content">
+        <h2>Projects</h2>
+        <div class="projects-container">
+            <div class="project">
+                <img src="image_box\responsive-portfolio.png" alt="Project 1">
+                <div class="project-content">
+                    <h3>Project 1: Responsive Portfolio Website</h3>
+                    <p>A responsive portfolio website built with HTML, CSS, and JavaScript.</p>
+                </div>
+            </div>
+            <div class="project">
+                <img src="image_box\download.jpeg" alt="Project 2">
+                <div class="project-content">
+                    <h3>Project 2: Interactive Web Application</h3>
+                    <p>An interactive web application built with React and Node.js.</p>
+                </div>
+            </div>
+            <div class="project">
+                <img src="image_box/blogger.png" alt="Project 3">
+                <div class="project-content">
+                    <h3>Project 3: Blog Platform</h3>
+                    <p>A blog platform with user authentication built with Django.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Languages Section -->
+    <section id="languages" class="content">
+        <h2>Languages</h2>
+        <p>I am fluent in English and my local language(Akan) and I have basic knowledge of French and Spanish.</p>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="content">
+        <h2>Contact</h2>
+        <p>
+            Feel free to reach out to me at 
+            <a href="mailto:willimensah@yahoo.com" class="email-link" aria-label="Email Daniel Mensah Williams">willimensah@yahoo.com</a> 
+            or connect with me on 
+            <a href="https://www.linkedin.com/in/danielmensahwilliams22" class="email-link" target="_blank" rel="noopener" aria-label="Visit Daniel's LinkedIn profile">LinkedIn</a>.
+        </p>
+        
+        <form id="contact-form" class="contact-form">
+            <input type="text" id="name" name="name" placeholder="Your Name" required aria-label="Your Name">
+            <input type="email" id="email" name="email" placeholder="Your Email" required aria-label="Your Email">
+            <textarea id="message" name="message" placeholder="Your Message" rows="5" required aria-label="Your Message"></textarea>
+            <button type="submit">Send Message</button>
+        </form>
+        <p id="response-message"></p>
+    </section>
+
+   <!-- Include EmailJS script -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+<script type="text/javascript">
+    (function() {
+        emailjs.init("BQ7KERmsCPecbAlho"); // Initialize EmailJS with your User ID
+    })();
+
+    document.addEventListener("DOMContentLoaded", function() { 
+        document.getElementById("contact-form").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Collect form data
+            const name = document.getElementById("name").value;
+            const email = document.getElementById("email").value;
+            const message = document.getElementById("message").value;
+
+            // Validate form data
+            if (!name || !email || !message) {
+                document.getElementById("response-message").innerText = "Please fill out all fields.";
+                document.getElementById("response-message").style.color = "red";
+                return;
+            }
+
+            // Send email using EmailJS
+            emailjs.send("service_n0pvwkb", "template_w4186cp", {
+                name: name,
+                email: email,
+                message: message
+            }).then(
+                function(response) {
+                    console.log("SUCCESS!", response.status, response.text);
+                    document.getElementById("response-message").innerText = "Message sent successfully!";
+                    document.getElementById("response-message").style.color = "green";
+                    document.getElementById("contact-form").reset(); // Clear the form
+                },
+                function(error) {
+                    console.log("FAILED...", error);
+                    document.getElementById("response-message").innerText = "Failed to send message. Please try again.";
+                    document.getElementById("response-message").style.color = "red";
+                }
+            );
+        });
+    });
+
+    // Toggle Button Functionality
+    const toggleButton = document.getElementById('toggle-button');
+    const menuIcon = document.getElementById('menu-icon');
+    const navLinks = document.getElementById('nav-links');
+
+    toggleButton.addEventListener('click', function() {
+        if (document.body.classList.contains('night')) {
+            document.body.classList.remove('night');
+            document.body.classList.add('day');
+            toggleButton.innerHTML = "🌙 Switch to Night";
+        } else {
+            document.body.classList.remove('day');
+            document.body.classList.add('night');
+            toggleButton.innerHTML = "☀️ Switch to Day";
+        }
+    });
+
+    // Hamburger Menu Functionality
+    menuIcon.addEventListener('click', function() {
+        navLinks.classList.toggle('active');
+    });
+
+    // Generate Stars
+    const starsContainer = document.querySelector('.stars');
+    const starCount = 300; // Increased number of stars
+
+    for (let i = 0; i < starCount; i++) {
+        const star = document.createElement('div');
+        star.classList.add('star');
+        star.style.top = `${Math.random() * 100}%`;
+        star.style.left = `${Math.random() * 100}%`;
+        star.style.animationDelay = `${Math.random() * 2}s`;
+        starsContainer.appendChild(star);
+    }
+
+    // On-Scroll Animations
+    const sections = document.querySelectorAll('section');
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, { threshold: 0.5 });
+
+    sections.forEach((section) => {
+        observer.observe(section);
+    });
+
+    // Date and Time Greeting
+    const greeting = document.getElementById('greeting');
+    const hour = new Date().getHours();
+
+    if (hour >= 5 && hour < 12) {
+        greeting.textContent = "Good Morning!";
+    } else if (hour >= 12 && hour < 18) {
+        greeting.textContent = "Good Afternoon!";
+    } else {
+        greeting.textContent = "Good Evening!";
+    }
+</script>
+</body>
+</html>
